@@ -4,7 +4,7 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 
-fn get_all_numbers(string: String, use_string: bool) -> Vec<u32> {
+fn get_all_numbers(string: String) -> Vec<u32> {
     let numbers_literals: HashMap<&str, i32> = HashMap::from([
         ("zero", 0),
         ("one", 1),
@@ -23,7 +23,7 @@ fn get_all_numbers(string: String, use_string: bool) -> Vec<u32> {
         if character.is_numeric() {
             let number = character.to_digit(10).unwrap() as u32;
             all_numbers.push(number);
-        } else if use_string && character.is_alphabetic() {
+        } else if character.is_alphabetic() {
             for (key, _value) in numbers_literals.iter() {
                 let key_len: usize = key.len();
                 let remaining_chars: usize = chars.len() - index;
@@ -43,11 +43,6 @@ fn get_all_numbers(string: String, use_string: bool) -> Vec<u32> {
 
 fn main() {
     let file_path: String = env::args().nth(1).expect("Please supply a file path");
-    let use_strings: String = env::args()
-        .nth(2)
-        .expect("Please tell me if you want to use strings");
-    let should_use_strings: bool = use_strings == "use_strings";
-
     println!("Using file {}", file_path);
 
     let file_content: String = fs::read_to_string(file_path).unwrap();
@@ -55,7 +50,7 @@ fn main() {
 
     let mut total_sum: u32 = 0;
     for line in lines {
-        let all_numbers: Vec<u32> = get_all_numbers(line.to_string(), should_use_strings);
+        let all_numbers: Vec<u32> = get_all_numbers(line.to_string());
         let first: u32 = *all_numbers.first().unwrap() as u32;
         let last: u32 = *all_numbers.last().unwrap() as u32;
         let value: u32 = first * 10 + last;
